@@ -5,12 +5,12 @@ import type { JwtVariables } from 'hono/jwt'
 
 const app = new Hono()
 
-app.use('/*', (c, next) => {
-    const jwtMiddleware = jwt({
-        secret: env<{ JWT_SECRET: string }>(c).JWT_SECRET,
-    })
-    return jwtMiddleware(c, next)
-})
+// app.use('/*', (c, next) => {
+//     const jwtMiddleware = jwt({
+//         secret: env<{ JWT_SECRET: string }>(c).JWT_SECRET,
+//     })
+//     return jwtMiddleware(c, next)
+// })
 
 app.get('/page', c => {
     const payload = c.get('jwtPayload')

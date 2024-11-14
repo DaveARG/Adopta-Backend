@@ -8,12 +8,90 @@ datasource db {
 }
 
 model User {
-  id        Int       @id @default(autoincrement())
-  phone     String    @unique
-  password  String
-  name      String
-  lastName  String?
+  id       Int     @id @default(autoincrement())
+  phone    String  @unique
+  password String
+  name     String
+  lastName String?
+
+  // Contacto
+  celulares Json?
+  email     String?
+  direccion String?
+  ubicacion Json?
+
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+
+  // Relaciones
+  postsAdopcion PostAdopcion[]
+  postsSeBusca  PostSeBusca[]
+}
+
+model PostAdopcion {
+  id            Int    @id @default(autoincrement())
+  title         String @db.Text
+  fotoPrincipal String
+
+  // Foreign key
+  userId Int
+
+  // Contacto
+  celulares Json?
+  email     String?
+  direccion String?
+  ubicacion Json?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Relaciones
+  photos Photo[]
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model PostSeBusca {
+  id            Int     @id @default(autoincrement())
+  title         String  @db.Text
+  fotoPrincipal String
+  recompensa    Decimal @db.Decimal(9, 2)
+
+  // Foreign key
+  userId Int
+
+  // Contacto
+  celulares Json?
+  email     String?
+  direccion String?
+  ubicacion Json?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Relaciones
+  photos Photo[]
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+enum ModelType {
+  PostAdopcion
+  PostSeBusca
+}
+
+model Photo {
+  id        Int       @id @default(autoincrement())
+  url       String
+  modelId   Int
+  modelType ModelType
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  // Relaciones
+  postAdopcion PostAdopcion @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "PostAdopcionPhotos")
+  postSeBusca  PostSeBusca  @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "PostSeBuscaPhotos")
 }
