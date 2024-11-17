@@ -1,10 +1,13 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
+import { cors } from 'hono/cors'
 import path from 'path'
 import { fileURLToPath } from 'url'
 import registerRoutes from '@/plugins/register-routes.js'
 
 const app = new Hono()
+
+app.use('/api/*', cors())
 
 process.loadEnvFile()
 

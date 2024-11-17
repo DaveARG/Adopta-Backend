@@ -8,7 +8,7 @@
     <body>
         <h1>Subir Archivo</h1>
         <form
-            action="http://localhost:3000/api/post"
+            action="http://localhost:3000/api/post-adopcion"
             method="POST"
             enctype="multipart/form-data"
         >
@@ -33,4 +33,24 @@
             <button type="submit">Enviar</button>
         </form>
     </body>
+    <!-- <script>
+        document
+            .querySelector('form')
+            .addEventListener('submit', async event => {
+                event.preventDefault()
+
+                const formData = new FormData(event.target)
+                const id = 2 // ID dinámico según corresponda
+                const response = await fetch(
+                    `http://localhost:3000/api/post/${id}`,
+                    {
+                        method: 'PUT',
+                        body: formData,
+                    }
+                )
+
+                const result = await response.json()
+                console.log(result)
+            })
+    </script> -->
 </html>

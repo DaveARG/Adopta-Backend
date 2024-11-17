@@ -9,15 +9,15 @@ datasource db {
 
 model User {
   id       Int     @id @default(autoincrement())
-  phone    String  @unique
-  password String
-  name     String
-  lastName String?
+  phone    String  @unique @db.VarChar()
+  password String  @db.VarChar()
+  name     String  @db.VarChar()
+  lastName String? @db.VarChar()
 
   // Contacto
   celulares Json?
-  email     String?
-  direccion String?
+  email     String? @db.VarChar()
+  direccion String? @db.VarChar()
   ubicacion Json?
 
   createdAt DateTime  @default(now())
@@ -27,44 +27,70 @@ model User {
   // Relaciones
   postsAdopcion PostAdopcion[]
   postsSeBusca  PostSeBusca[]
+  likes         Like[]
+  comments      Comment[]
+  shareds       Shared[]
 }
 
 model PostAdopcion {
-  id            Int    @id @default(autoincrement())
-  title         String @db.Text
-  fotoPrincipal String
+  id    Int    @id @default(autoincrement())
+  title String
+  foto  String @db.VarChar()
 
   // Foreign key
   userId Int
 
   // Contacto
   celulares Json?
-  email     String?
-  direccion String?
+  email     String? @db.VarChar()
+  direccion String? @db.VarChar()
   ubicacion Json?
+
+  disponible Boolean @default(true)
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
   // Relaciones
-  photos Photo[]
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  // photos Photo[]
+  petPostsAdopcion PetPostAdopcion[]
+  user             User              @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+enum Sexo {
+  Masculino
+  Femenino
+}
+
+model PetPostAdopcion {
+  id          Int     @id @default(autoincrement())
+  raza        String? @db.VarChar()
+  descripcion String? @db.Text
+  edad        String? @db.VarChar()
+  sexo        Sexo
+  foto        String  @db.VarChar()
+  disponible  Boolean @default(true)
+
+  postAdopcionId Int
+
+  postAdopcion PostAdopcion @relation(fields: [postAdopcionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model PostSeBusca {
-  id            Int     @id @default(autoincrement())
-  title         String  @db.Text
-  fotoPrincipal String
-  recompensa    Decimal @db.Decimal(9, 2)
+  id         Int     @id @default(autoincrement())
+  title      String
+  name       String  @db.VarChar()
+  foto       String  @db.VarChar()
+  recompensa Decimal @db.Decimal(9, 2)
 
   // Foreign key
   userId Int
 
   // Contacto
   celulares Json?
-  email     String?
-  direccion String?
+  email     String? @db.VarChar()
+  direccion String? @db.VarChar()
   ubicacion Json?
 
   createdAt DateTime  @default(now())
@@ -72,26 +98,49 @@ model PostSeBusca {
   deletedAt DateTime?
 
   // Relaciones
-  photos Photo[]
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  // photos Photo[]
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 enum ModelType {
-  PostAdopcion
-  PostSeBusca
+  postAdopcion
+  postSeBusca
 }
 
-model Photo {
+model Like {
   id        Int       @id @default(autoincrement())
-  url       String
-  modelId   Int
+  userId    Int
   modelType ModelType
+  modelId   Int
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   // Relaciones
-  postAdopcion PostAdopcion @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "PostAdopcionPhotos")
-  postSeBusca  PostSeBusca  @relation(fields: [modelId], references: [id], onDelete: Cascade, onUpdate: Cascade, map: "PostSeBuscaPhotos")
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Comment {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  modelType ModelType
+  modelId   Int
+  comment   String
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+}
+
+model Shared {
+  id        Int       @id @default(autoincrement())
+  userId    Int
+  modelType ModelType
+  modelId   Int
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 }

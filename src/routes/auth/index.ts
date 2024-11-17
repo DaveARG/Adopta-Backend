@@ -3,7 +3,7 @@ import { env } from 'hono/adapter'
 import { sign } from 'hono/jwt'
 import bcrypt from 'bcrypt'
 import db from '@/db.js'
-import { validateLoginSchema } from './validations/validate-login.js'
+import { validateLoginSchema } from './validate-login.js'
 
 const app = new Hono()
 

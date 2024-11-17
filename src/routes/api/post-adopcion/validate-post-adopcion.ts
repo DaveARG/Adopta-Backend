@@ -23,9 +23,6 @@ const objectSchema = z
                     type: 'image/jpeg',
                 } as File,
             }),
-        // userId: z.coerce.number().positive().openapi({
-        //     example: 1,
-        // }),
         celulares: z
             .string()
             .refine(
@@ -79,4 +76,8 @@ const objectSchema = z
 
 export function validatePostAdopcionSchema(object: unknown) {
     return objectSchema.safeParse(object)
+}
+
+export function validatePartialPostAdopcionSchema(object: unknown) {
+    return objectSchema.partial().safeParse(object)
 }
